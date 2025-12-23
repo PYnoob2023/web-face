@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>3D 人脸点云 - 极简模式</title>
+    <title>3D 人脸点云 - 清晰点云版</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
@@ -32,9 +32,10 @@
             display: block;
             width: 100%;
             height: 100%;
+            background: #000;
         }
         
-        /* FPS显示 - 极简 */
+        /* FPS显示 */
         #fps-display {
             position: absolute;
             top: 20px;
@@ -43,43 +44,37 @@
             color: #00ff88;
             font-weight: bold;
             text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
-            background: rgba(0, 0, 0, 0.3);
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            backdrop-filter: blur(10px);
             z-index: 100;
             user-select: none;
         }
         
-        .fps-label {
-            color: #888;
-            margin-right: 5px;
-        }
-        
-        /* 使用说明 - 极简 */
+        /* 使用说明 */
         #instructions {
             position: absolute;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            border-radius: 8px;
-            padding: 10px 15px;
-            font-size: 12px;
-            color: #aaa;
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-size: 13px;
+            color: #ccc;
+            backdrop-filter: blur(10px);
             z-index: 100;
             max-width: 90%;
             text-align: center;
             user-select: none;
-            transition: opacity 0.3s;
         }
         
         .instruction-item {
             display: inline-block;
-            margin: 0 10px;
+            margin: 0 8px;
         }
         
         .instruction-key {
@@ -88,77 +83,69 @@
             margin-right: 4px;
         }
         
-        /* 摄像头权限弹窗 - 简化 */
+        /* 摄像头权限弹窗 */
         #camera-permission {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(10, 10, 15, 0.95);
-            border: 1px solid rgba(0, 255, 136, 0.3);
-            border-radius: 12px;
-            padding: 25px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            backdrop-filter: blur(20px);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
             z-index: 1000;
+            text-align: center;
+        }
+        
+        .permission-content {
+            background: rgba(20, 20, 25, 0.9);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
         }
         
         .permission-title {
             color: #00ff88;
-            font-size: 18px;
-            margin-bottom: 15px;
+            font-size: 22px;
+            margin-bottom: 20px;
         }
         
         .permission-text {
             color: #ccc;
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 25px;
         }
         
         #start-camera {
             background: #00ff88;
             color: #000;
             font-weight: bold;
-            padding: 12px 24px;
+            padding: 15px 30px;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 12px;
+            font-size: 16px;
             cursor: pointer;
             width: 100%;
-            margin-top: 10px;
         }
         
-        /* 移动端优化 */
         @media (max-width: 768px) {
             #fps-display {
-                top: 15px;
-                right: 15px;
+                top: 10px;
+                right: 10px;
                 font-size: 12px;
-                padding: 4px 8px;
+                padding: 6px 12px;
             }
             
             #instructions {
-                bottom: 15px;
-                padding: 8px 12px;
-                font-size: 11px;
-            }
-            
-            .instruction-item {
-                margin: 0 6px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            #instructions {
-                font-size: 10px;
-                padding: 6px 10px;
-            }
-            
-            .instruction-item {
-                margin: 0 4px;
+                bottom: 10px;
+                padding: 10px 15px;
+                font-size: 12px;
             }
         }
     </style>
@@ -168,19 +155,19 @@
 
     <!-- FPS显示 -->
     <div id="fps-display">
-        <span class="fps-label">FPS:</span>
+        <span>FPS: </span>
         <span id="fps-value">0</span>
     </div>
 
     <!-- 使用说明 -->
     <div id="instructions">
         <div class="instruction-item">
-            <span class="instruction-key">触摸/鼠标</span>
+            <span class="instruction-key">拖动</span>
             <span>旋转</span>
         </div>
         <div class="instruction-item">
-            <span class="instruction-key">双指/滚轮</span>
-            <span>缩放</span>
+            <span class="instruction-key">缩放</span>
+            <span>调整距离</span>
         </div>
         <div class="instruction-item">
             <span class="instruction-key">双击</span>
@@ -190,79 +177,51 @@
 
     <!-- 摄像头权限弹窗 -->
     <div id="camera-permission">
-        <div class="permission-title">📱 人脸点云检测</div>
-        <div class="permission-text">
-            需要访问您的摄像头以进行3D面部点云重建。<br>
-            所有处理均在本地完成，数据不会上传。
+        <div class="permission-content">
+            <div class="permission-title">人脸点云检测</div>
+            <div class="permission-text">
+                需要访问您的摄像头<br>
+                所有处理均在本地完成
+            </div>
+            <button id="start-camera">开始检测</button>
         </div>
-        <button id="start-camera">开始检测</button>
     </div>
 
     <script>
-    // 主应用程序类 - 极简版本
     class FacePointCloudApp {
         constructor() {
-            // 检测设备
+            // 设备检测
             this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
-            // 状态变量
+            // 状态
             this.isRunning = false;
             this.isPaused = false;
             
-            // 性能统计
+            // 性能
             this.frameCount = 0;
             this.lastFpsTime = 0;
             this.fps = 0;
             
-            // 3D场景参数
-            this.cameraDistance = this.isMobile ? 4.0 : 3.0;
+            // 3D参数 - 修复点云清晰度的关键参数
+            this.cameraDistance = 3.0;
             this.rotationX = 0.0;
             this.rotationY = 0.0;
             this.isDragging = false;
             
-            // 点云参数
-            this.basePointSize = 2.5;
-            this.spacingMultiplier = 1.5;
-            
-            // 颜色系统
-            this.colors = this.createColorSystem();
+            // 🎯 关键：点云清晰度参数
+            this.basePointSize = 2.5;           // 小点，非面
+            this.spacingMultiplier = 1.5;       // 增加点间距
             
             // DOM元素
             this.canvas = document.getElementById('webgl-canvas');
             this.fpsElement = document.getElementById('fps-value');
-            this.instructions = document.getElementById('instructions');
             
             // 初始化
             this.initThreeJS();
             this.initEventListeners();
-            
-            console.log("🚀 3D面部点云 - 极简模式");
         }
         
-        // 创建颜色系统
-        createColorSystem() {
-            return {
-                face_oval: 0x00b4ff,
-                lips: 0xff3366,
-                eyes: 0x00ff88,
-                eyebrows: 0xffcc00,
-                nose: 0xff6600,
-                default: 0xcccccc
-            };
-        }
-        
-        getColor(index) {
-            if (index < 17) return this.colors.face_oval;
-            if (index >= 61 && index < 97) return this.colors.lips;
-            if (index >= 33 && index < 47) return this.colors.eyes;
-            if (index >= 263 && index < 277) return this.colors.eyes;
-            if (index >= 105 && index < 117) return this.colors.eyebrows;
-            if (index >= 285 && index < 297) return this.colors.eyebrows;
-            if ((index >= 168 && index < 198) || [1,2,3,4,5,6].includes(index)) return this.colors.nose;
-            return this.colors.default;
-        }
-        
-        // 初始化Three.js
+        // 🎯 关键：初始化Three.js - 确保点云清晰
         initThreeJS() {
             try {
                 // 场景
@@ -274,45 +233,78 @@
                 this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
                 this.camera.position.set(0, 0, this.cameraDistance);
                 
-                // 渲染器
+                // 🎯 关键：渲染器设置 - 确保清晰点
                 this.renderer = new THREE.WebGLRenderer({
                     canvas: this.canvas,
-                    antialias: false,
+                    antialias: false,           // ❌ 禁用抗锯齿
                     alpha: false,
                     powerPreference: "high-performance"
                 });
                 
                 this.renderer.setSize(window.innerWidth, window.innerHeight);
-                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+                this.renderer.setPixelRatio(1); // ❌ 固定像素比，防止模糊
                 
-                // 点云
+                // 🎯 关键：点云材质 - 确保清晰小点
                 this.pointsGeometry = new THREE.BufferGeometry();
                 this.pointsMaterial = new THREE.PointsMaterial({
-                    size: this.basePointSize,
+                    size: this.basePointSize,   // 小点
                     vertexColors: true,
-                    sizeAttenuation: false,
-                    transparent: false,
-                    depthTest: true
+                    sizeAttenuation: false,     // ❌ 禁用大小衰减
+                    transparent: false,         // ❌ 禁用透明
+                    opacity: 1.0,              // 完全不透明
+                    depthWrite: true,
+                    depthTest: true,
+                    blending: THREE.NormalBlending // ❌ 正常混合，不叠加
                 });
                 
+                // 创建点云
                 this.points = new THREE.Points(this.pointsGeometry, this.pointsMaterial);
                 this.scene.add(this.points);
                 
-                console.log("✅ Three.js初始化完成");
+                console.log("✅ Three.js初始化完成 - 清晰点云模式");
                 
             } catch (error) {
                 console.error("❌ Three.js初始化失败:", error);
-                alert("WebGL初始化失败，请刷新页面重试");
+                alert("WebGL初始化失败");
             }
         }
         
-        // 初始化事件监听器
         initEventListeners() {
             // 窗口调整
             window.addEventListener('resize', () => {
                 this.camera.aspect = window.innerWidth / window.innerHeight;
                 this.camera.updateProjectionMatrix();
                 this.renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+            
+            // 触摸事件
+            this.canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (e.touches.length === 1) {
+                    this.isDragging = true;
+                    this.lastMouseX = e.touches[0].clientX;
+                    this.lastMouseY = e.touches[0].clientY;
+                    this.touchStartRotation = { x: this.rotationX, y: this.rotationY };
+                }
+            });
+            
+            this.canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (e.touches.length === 1 && this.isDragging) {
+                    const deltaX = e.touches[0].clientX - this.lastMouseX;
+                    const deltaY = e.touches[0].clientY - this.lastMouseY;
+                    
+                    this.rotationY = this.touchStartRotation.y - deltaX * 0.5;
+                    this.rotationX = this.touchStartRotation.x + deltaY * 0.5;
+                    this.rotationX = Math.max(-90, Math.min(90, this.rotationX));
+                    
+                    this.lastMouseX = e.touches[0].clientX;
+                    this.lastMouseY = e.touches[0].clientY;
+                }
+            });
+            
+            this.canvas.addEventListener('touchend', () => {
+                this.isDragging = false;
             });
             
             // 鼠标事件
@@ -325,7 +317,6 @@
             
             window.addEventListener('mousemove', (e) => {
                 if (!this.isDragging) return;
-                
                 const deltaX = e.clientX - this.lastMouseX;
                 const deltaY = e.clientY - this.lastMouseY;
                 
@@ -341,103 +332,39 @@
                 this.isDragging = false;
             });
             
-            // 滚轮缩放
+            // 滚轮
             this.canvas.addEventListener('wheel', (e) => {
                 e.preventDefault();
                 this.cameraDistance += e.deltaY * 0.005;
                 this.cameraDistance = Math.max(1.0, Math.min(10.0, this.cameraDistance));
             });
             
-            // 触摸事件
-            this.canvas.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                
-                if (e.touches.length === 1) {
-                    this.isDragging = true;
-                    this.lastMouseX = e.touches[0].clientX;
-                    this.lastMouseY = e.touches[0].clientY;
-                    this.touchStartRotation = { x: this.rotationX, y: this.rotationY };
-                }
-                
-                if (e.touches.length === 2) {
-                    this.isDragging = false;
-                    const dx = e.touches[0].clientX - e.touches[1].clientX;
-                    const dy = e.touches[0].clientY - e.touches[1].clientY;
-                    this.lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
-                }
-            });
-            
-            this.canvas.addEventListener('touchmove', (e) => {
-                e.preventDefault();
-                
-                if (e.touches.length === 1 && this.isDragging) {
-                    const deltaX = e.touches[0].clientX - this.lastMouseX;
-                    const deltaY = e.touches[0].clientY - this.lastMouseY;
-                    
-                    this.rotationY = this.touchStartRotation.y - deltaX * 0.5;
-                    this.rotationX = this.touchStartRotation.x + deltaY * 0.5;
-                    this.rotationX = Math.max(-90, Math.min(90, this.rotationX));
-                    
-                    this.lastMouseX = e.touches[0].clientX;
-                    this.lastMouseY = e.touches[0].clientY;
-                }
-                
-                if (e.touches.length === 2) {
-                    const dx = e.touches[0].clientX - e.touches[1].clientX;
-                    const dy = e.touches[0].clientY - e.touches[1].clientY;
-                    const touchDistance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    const zoomDelta = (touchDistance - this.lastTouchDistance) * 0.01;
-                    this.cameraDistance -= zoomDelta;
-                    this.cameraDistance = Math.max(1.0, Math.min(10.0, this.cameraDistance));
-                    
-                    this.lastTouchDistance = touchDistance;
-                }
-            });
-            
-            this.canvas.addEventListener('touchend', () => {
-                this.isDragging = false;
-            });
-            
             // 双击重置
             this.canvas.addEventListener('dblclick', () => {
-                this.cameraDistance = this.isMobile ? 4.0 : 3.0;
+                this.cameraDistance = 3.0;
                 this.rotationX = 0.0;
                 this.rotationY = 0.0;
             });
             
-            // 开始摄像头按钮
+            // 开始按钮
             document.getElementById('start-camera').addEventListener('click', () => {
                 this.startCamera();
             });
-            
-            // 空格暂停/继续
-            document.addEventListener('keydown', (e) => {
-                if (e.code === 'Space') {
-                    e.preventDefault();
-                    this.isPaused = !this.isPaused;
-                }
-            });
-            
-            // 隐藏/显示说明
-            this.instructions.addEventListener('click', () => {
-                this.instructions.style.opacity = this.instructions.style.opacity === '0.3' ? '1' : '0.3';
-            });
         }
         
-        // 开始摄像头
         async startCamera() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({
                     video: {
-                        width: { ideal: this.isMobile ? 480 : 640 },
-                        height: { ideal: this.isMobile ? 640 : 480 },
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
                         facingMode: 'user',
-                        frameRate: { ideal: 24 }
+                        frameRate: { ideal: 30 }
                     },
                     audio: false
                 });
                 
+                // 创建视频元素
                 this.videoElement = document.createElement('video');
                 this.videoElement.srcObject = stream;
                 this.videoElement.autoplay = true;
@@ -454,17 +381,15 @@
                 });
                 
                 document.getElementById('camera-permission').style.display = 'none';
-                
                 await this.initMediaPipe();
                 this.start();
                 
             } catch (error) {
                 console.error("摄像头访问失败:", error);
-                alert("无法访问摄像头，请检查权限设置");
+                alert("无法访问摄像头");
             }
         }
         
-        // 初始化MediaPipe
         async initMediaPipe() {
             this.faceMesh = new FaceMesh({
                 locateFile: (file) => {
@@ -481,7 +406,7 @@
             
             this.faceMesh.onResults(this.handleFaceResults.bind(this));
             
-            // 开始处理视频
+            // 开始处理
             const processFrame = async () => {
                 if (!this.isRunning || this.isPaused || !this.videoElement) return;
                 
@@ -491,7 +416,6 @@
                     }
                     requestAnimationFrame(processFrame);
                 } catch (error) {
-                    console.error("视频处理错误:", error);
                     requestAnimationFrame(processFrame);
                 }
             };
@@ -500,23 +424,11 @@
             processFrame();
         }
         
-        // 处理面部检测结果
         handleFaceResults(results) {
-            if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) {
-                return;
-            }
+            if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) return;
             
             const faceLandmarks = results.multiFaceLandmarks[0];
-            const landmarks3D = [];
-            
-            faceLandmarks.forEach(lm => {
-                const x = (0.5 - lm.x) * 2.0 * this.spacingMultiplier;
-                const y = (0.5 - lm.y) * 2.0 * this.spacingMultiplier;
-                const z = -lm.z * 1.5 * this.spacingMultiplier;
-                landmarks3D.push([x, y, z]);
-            });
-            
-            this.updatePointCloud(landmarks3D);
+            this.updatePointCloud(faceLandmarks);
         }
         
         // 更新点云
@@ -524,22 +436,41 @@
             const positions = new Float32Array(landmarks.length * 3);
             const colors = new Float32Array(landmarks.length * 3);
             
-            landmarks.forEach((point, index) => {
-                positions[index * 3] = point[0];
-                positions[index * 3 + 1] = point[1];
-                positions[index * 3 + 2] = point[2];
+            landmarks.forEach((landmark, index) => {
+                // 🎯 关键：应用间距增强
+                const x = (0.5 - landmark.x) * 2.0 * this.spacingMultiplier;
+                const y = (0.5 - landmark.y) * 2.0 * this.spacingMultiplier;
+                const z = -landmark.z * 1.5 * this.spacingMultiplier;
                 
-                const color = this.getColor(index);
+                positions[index * 3] = x;
+                positions[index * 3 + 1] = y;
+                positions[index * 3 + 2] = z;
+                
+                // 颜色编码
+                let color;
+                if (index < 17) color = 0x00b4ff;
+                else if (index >= 61 && index < 97) color = 0xff3366;
+                else if ((index >= 33 && index < 47) || (index >= 263 && index < 277)) color = 0x00ff88;
+                else if ((index >= 105 && index < 117) || (index >= 285 && index < 297)) color = 0xffcc00;
+                else if ((index >= 168 && index < 198) || [1,2,3,4,5,6].includes(index)) color = 0xff6600;
+                else color = 0xcccccc;
+                
                 colors[index * 3] = ((color >> 16) & 255) / 255;
                 colors[index * 3 + 1] = ((color >> 8) & 255) / 255;
                 colors[index * 3 + 2] = (color & 255) / 255;
             });
             
-            this.pointsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            this.pointsGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            if (!this.pointsGeometry.attributes.position) {
+                this.pointsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                this.pointsGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            } else {
+                this.pointsGeometry.attributes.position.array = positions;
+                this.pointsGeometry.attributes.color.array = colors;
+                this.pointsGeometry.attributes.position.needsUpdate = true;
+                this.pointsGeometry.attributes.color.needsUpdate = true;
+            }
         }
         
-        // 动画循环
         animate() {
             const now = performance.now();
             
@@ -554,7 +485,7 @@
                 this.fpsElement.textContent = Math.round(this.fps);
             }
             
-            // 更新相机位置
+            // 更新相机
             const radX = THREE.MathUtils.degToRad(this.rotationX);
             const radY = THREE.MathUtils.degToRad(this.rotationY);
             
@@ -567,18 +498,14 @@
             
             // 渲染
             this.renderer.render(this.scene, this.camera);
-            
             requestAnimationFrame(this.animate.bind(this));
         }
         
-        // 启动应用
         start() {
             this.animate();
-            console.log("🚀 应用已启动");
         }
     }
 
-    // 页面加载
     window.addEventListener('DOMContentLoaded', () => {
         new FacePointCloudApp();
     });
